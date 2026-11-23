@@ -1,13 +1,21 @@
 # beatles-db-2
 
-ビートルズDBのリニューアル版です。公開中の [beatles-db](https://github.com/ryo-i/beatles-db) はそのまま残し、画面も含めてこちらで作り直します。
+公開中の [beatles-db](https://github.com/ryo-i/beatles-db) はそのまま残し、画面も含めて Next.js と NestJS で作り直すリポジトリです。
 
-## 構成
+## 技術スタック
 
-Next.js + NestJS + PostgreSQL にします。土台は [next-nest-started](https://github.com/ryo-i/next-nest-started) の形をこのリポジトリへコピーし、ビートルズDBの機能はこちらに足します。
+- フロントエンド: Next.js 15（App Router）、React 19、TypeScript、Tailwind CSS
+- バックエンド: NestJS 11、TypeScript
+- DB: PostgreSQL 16、Prisma
+- API: OpenAPI からフロントの型を生成する。Swagger は `/api`
+- テスト: フロントは Vitest と Playwright、バックエンドは Jest
+- 開発環境: Docker Compose
 
-- フロントエンド: Next.js（App Router）
-- バックエンド: NestJS
-- データベース: PostgreSQL
+## ドキュメント
 
-スキーマは [docs/schema.md](docs/schema.md)、元データの列は [docs/source_table.md](docs/source_table.md) です。比べた3つの方針と、この構成に決めた理由は [docs/decision.md](docs/decision.md) にあります。
+- 起動、Swagger、Prisma Studio、Storybook: [docs/local.md](docs/local.md)
+- いまのコードの置き方: [docs/architecture.md](docs/architecture.md)
+- スキーマ: [docs/schema.md](docs/schema.md)
+- 元データの列: [docs/source_table.md](docs/source_table.md)
+- この構成に決めた理由: [docs/decision.md](docs/decision.md)
+- デプロイ: [docs/deploy.md](docs/deploy.md)
