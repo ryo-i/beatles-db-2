@@ -127,5 +127,5 @@ AWS の新規アカウントは、最大 $200 のクレジットを 6 か月か�
 - セッションやトークンの署名鍵は、サーバーの環境変数にします。Production と Preview で別の値にします。
 - 画面と API が同じホストなら、セッションは HttpOnly の Cookie に載せます。ホストを分けるときは `FRONTEND_ORIGIN` をその画面のオリジンにし、Cookie の `Secure` と `SameSite` を送り方に合わせます。`FRONTEND_ORIGIN` が空のままだと、CORS はオリジンを制限しません。
 - プレビューのデプロイは本番の利用者データへ繋がず、Neon の Preview 用ブランチを使います。Production の「Create database branch for deployment」はオフのままです。
-- `prisma db seed` は `Person` をすべて消してから入れ直します。利用者が入ったデータベースには実行しません。
+- `prisma db seed` は行を入れません。曲データは取り込みで入れます。
 - Swagger の `/api` を公開したままにするかを決めます。このルートは `vercel.json` の rewrite で外に出ています。

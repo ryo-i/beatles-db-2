@@ -8,8 +8,115 @@ generator client {
   engineType = "client"
 }
 
+enum ReleaseFormat {
+  Album
+  Single
+  EP
+}
+
+enum CreditBilling {
+  primary
+  secondary
+}
+
+model Label {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  releases Release[]
+
+  @@map("labels")
+}
+
+model Release {
+  id          Int             @id @default(autoincrement())
+  catalogCode String          @unique @map("catalog_code")
+  title       String
+  format      ReleaseFormat
+  releaseDate DateTime        @map("release_date") @db.Date
+  labelId     Int             @map("label_id")
+  label       Label           @relation(fields: [labelId], references: [id])
+  country     String
+  category    String
+  icon        String
+  path        String
+  tracks      Track[]
+  credits     ReleasePerson[]
+
+  @@map("releases")
+}
+
+model Track {
+  id        Int             @id @default(autoincrement())
+  releaseId Int             @map("release_id")
+  release   Release         @relation(fields: [releaseId], references: [id])
+  title     String
+  artist    String
+  disc      Int
+  side      String
+  number    Int
+  remarks   String
+  source    String
+  credits   TrackPerson[]
+  originals TrackOriginal[]
+
+  @@index([releaseId])
+  @@map("tracks")
+}
 
 model Person {
-  id    Int    @id @default(autoincrement())
-  name  String
+  id             Int             @id @default(autoincrement())
+  name           String          @unique
+  profile        String?
+  trackCredits   TrackPerson[]
+  releaseCredits ReleasePerson[]
+
+  @@map("persons")
+}
+
+model Role {
+  id             Int             @id @default(autoincrement())
+  name           String          @unique
+  trackCredits   TrackPerson[]
+  releaseCredits ReleasePerson[]
+
+  @@map("roles")
+}
+
+model TrackPerson {
+  trackId  Int           @map("track_id")
+  personId Int           @map("person_id")
+  roleId   Int           @map("role_id")
+  billing  CreditBilling
+  track    Track         @relation(fields: [trackId], references: [id])
+  person   Person        @relation(fields: [personId], references: [id])
+  role     Role          @relation(fields: [roleId], references: [id])
+
+  @@id([trackId, personId, roleId])
+  @@index([personId])
+  @@index([roleId])
+  @@map("track_persons")
+}
+
+model TrackOriginal {
+  id      Int    @id @default(autoincrement())
+  trackId Int    @map("track_id")
+  name    String
+  track   Track  @relation(fields: [trackId], references: [id])
+
+  @@unique([trackId, name])
+  @@map("track_originals")
+}
+
+model ReleasePerson {
+  releaseId Int    @map("release_id")
+  personId  Int    @map("person_id")
+  roleId    Int    @map("role_id")
+  release   Release @relation(fields: [releaseId], references: [id])
+  person    Person  @relation(fields: [personId], references: [id])
+  role      Role    @relation(fields: [roleId], references: [id])
+
+  @@id([releaseId, personId, roleId])
+  @@index([personId])
+  @@index([roleId])
+  @@map("release_persons")
 }

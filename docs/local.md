@@ -20,11 +20,7 @@ DB の公開ポートは `55432` です。このマシンに入っている Post
 | Swagger | http://localhost:3001/api |
 | DB | localhost:55432 |
 
-サンプルの人物（織田信長、豊臣秀吉、徳川家康）は自動では入りません。ビートルズの曲データではありません。入れるときは次を実行し、画面を再読み込みします。
-
-```bash
-docker compose exec backend npx prisma db seed
-```
+曲はまだ入りません。`prisma db seed` は行を足しません。人物一覧の見本から名前を登録すると、クレジット用の `persons` に1行増えます。
 
 ## Swagger が開かないとき
 
