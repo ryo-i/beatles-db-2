@@ -1,6 +1,6 @@
 # 進め方
 
-2026-11-25 時点の順番です。テーブルの形は [schema.md](schema.md)、列の分け方は [source_table.md](source_table.md)、公開中のサイトを残す判断は [decision.md](decision.md) にあります。
+2026-11-25 時点の順番です。テーブルの形は [schema.md](schema.md)、列の分け方は [source_table.md](source_table.md)、公開中のサイトを残す判断は [decision.md](decision.md)、一覧のあとに検討するアイデアは [ideas.md](ideas.md) にあります。
 
 いま動いている画面は、土台の人物一覧です。370曲は PostgreSQL に入っています。
 
@@ -39,3 +39,4 @@
 - 取り込み結果を件数で確認する。取り込みの完了条件です。
 - 見本の人物一覧と、戦国大名の seed を外す。最後の段です。
 - 公開サイトの切り替えは、一覧と詳細が揃ったあとです。
+- 一覧のあとで検討するアイデアは [ideas.md](ideas.md) にあります。今の順番には入れません。
