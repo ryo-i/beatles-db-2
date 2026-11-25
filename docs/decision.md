@@ -44,6 +44,6 @@ Next.js 12 から 15 への差は、依存関係の更新では埋まりませ�
 
 - 曲詳細は、今 `getStaticProps` で曲ごとの title と description を出している。スターターの人物一覧はブラウザから API を呼ぶ形なので、曲ページは App Router の `generateMetadata` でサーバーから取る。一覧の絞り込みはブラウザから呼ぶ。
 - 新しい生成経路は、本番の `beatles-db.vercel.app` を経由しない。公開中のサイトは、370曲の一覧と詳細が揃うまで残す。
-- `playing`、`songwriter`、`artwork` など `/` 区切りの列は、人物と役割に分ける。`remarks` の `/` は文の区切りなので、文字列のまま残す。`source` は中身があるのが1行である。
-- `john` / `paul` / `george` / `ringo` は、`playing` や `musician` と同じ事実の別表記である。
-- `artist` は13種類あり、同一人物でも表記が分かれる。表示用の文字列はリリースに残し、`persons` へ自動では同一視しない。
+- 人物と役割の分け方、`playing` を入れないこと、`artist` と `original` の置き場所は [schema.md](schema.md) に合わせる。`remarks` の `/` は文の区切りなので、文字列のまま残す。`source` は中身があるのが1行である。
+- `john` / `paul` / `george` / `ringo` は、`playing` や `musician` と同じ事実の別表記である。役割がある側だけを曲のクレジットにする。
+- `artist` は13種類あり、同一人物でも表記が分かれる。表示用の文字列は曲に残し、`persons` へ自動では同一視しない。

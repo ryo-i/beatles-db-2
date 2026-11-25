@@ -15,32 +15,32 @@ PostgreSQL等のデータベース設計・データ移行前の現状把握資�
 | icon          | アイコン種別記号                                  | T&B, BE                                            | 単一値                 |
 | category      | カテゴリ                                          | Tony & Beatles, Beatles                            | 単一値                 |
 | path          | パス・分類                                        | tony-beatles, beatles                              | 単一値                 |
-| artist        | アーティスト名                                    | Tony Sheridan and The Beat Brothers, The Beatles   | 単一値                 |
+| artist        | 表示用のアーティスト名                            | Tony Sheridan and The Beat Brothers, The Beatles   | 単一の文字列。`/` は名前の一部で、分割しない |
 | country       | 国                                                | GER, UK                                            | 単一値                 |
 | label         | レーベル                                          | Polydor, Parlophone                                | 単一値                 |
 | format        | 形式                                              | Single, Album                                      | 単一値                 |
 | title         | 作品タイトル                                      | My Bonnie, Love Me Do                              | 単一値                 |
-| order         | カタログ番号等                                    | TB-S-01, BE-S-01                                   | 単一値                 |
+| order         | カタログ番号                                      | TB-S-01, BE-S-01                                   | 単一値。この番号だけでリリースが分かれる |
 | disc          | ディスク番号                                      | 1                                                  | 単一値                 |
 | side          | レコード面                                        | A, B, 1, 2                                         | 単一値                 |
 | number        | 曲順                                              | 1, 2, 3                                            | 単一値                 |
 | track         | 曲名                                              | My Bonnie, Love Me Do                              | 単一値                 |
-| vocal         | ボーカル担当                                      | Tony Sheridan, Paul McCartney / (John Lennon)      | `/`で分割要検討        |
-| playing       | 演奏担当                                          | John Lennon / Paul McCartney / George Harrison     | `/`で分割要検討        |
+| vocal         | ボーカル担当                                      | Tony Sheridan, Paul McCartney / (John Lennon)      | `/` で分割。全体が括弧のものは補助 |
+| playing       | 演奏担当（役割なしの人名）                        | John Lennon / Paul McCartney / George Harrison     | 同じ事実がパート列にあるので、クレジットには入れない |
 | john          | ジョンのパート                                    | rhythm guitar, backing vocals                      | `,`区切りで分割も可    |
 | paul          | ポールのパート                                    | bass, backing vocals                               | `,`区切りで分割も可    |
 | george        | ジョージのパート                                  | lead guitar, backing vocals                        | `,`区切りで分割も可    |
 | ringo         | リンゴのパート                                    | drums, maracas                                     | `,`区切りで分割も可    |
 | musician      | 参加ミュージシャン（役割含む）                    | Pete Best : drums / Tony Sheridan : lead vocals, guitar | `/`区切り＋`: `でkey-value型 |
 | songwriter    | 作詞作曲者                                        | Lennon-McCartney / Paul McCartney / (John Lennon)  | `/`区切りで一対多      |
-| original      | 原曲名・原作者                                    | traditional, The Beatles                           | 単一値（複数の可能性） |
+| original      | 誰の曲か（作詞作曲者とは別）                      | traditional, The Beatles                           | `/` で複数行。persons には入れない |
 | producer      | プロデューサー                                    | Bert Kaempfert / George Martin                     | `/`区切りで一対多      |
 | engineer      | エンジニア                                        | Karl Hinze / Norman Smith                          | `/`区切りで一対多      |
 | artwork       | アートワーク担当（役割含む）                      | Angus McBean : photography                         | `/`区切り＋`: `でkey-value型 |
-| film          | 映画                                              | -                                                  | 単一値（空欄/複数可）  |
-| mv            | ミュージックビデオ等                              | -                                                  | 単一値（空欄/複数可）  |
-| remarks       | 備考                                              | Polydorから発売されたトニーのシングルのA面 / ...   | `/`区切りで一対多（文脈で分ける）|
-| source        | 情報源URL等                                       | https://en.wikipedia.org/... / ...                 | `/`区切りで一対多      |
+| film          | その曲の映画監督                                  | Richard Lester, The Beatles / Bernard Knowles      | `/` で複数人。曲ごとに違う |
+| mv            | その曲のMV監督                                    | Joseph McGrath, John Lennon / Yoko Ono             | `/` で複数人。曲ごとに違う |
+| remarks       | 備考                                              | Polydorから発売されたトニーのシングルのA面 / ...   | 文字列のまま。`/` は文の区切り |
+| source        | 情報源URL等                                       | https://en.wikipedia.org/... / ...                 | 文字列のまま。中身があるのは1行 |
 
 ---
 
@@ -69,25 +69,30 @@ PostgreSQL等のデータベース設計・データ移行前の現状把握資�
 
 ## 【今回のBEATLESデータ例：テーブル分割たたき台（人物統合案）】
 
-- `tracks`（楽曲：タイトル、年、release_id（リリース参照）、トラック番号など）
-- `releases`（リリース：アルバム/シングル/EP/映画/MV等を含む。id, title, type, format, release_date, label_id等）
-  - type/formatはENUM型または定数で管理も可
-- `labels`（レーベル：id, name等）
-- `persons`（人物：id, name, profile等。演奏者・作曲者・アートワーク・映像・制作等を統合管理）
-- `roles`（役割名：id, name等。「guitar」「drums」「lead vocals」「photography」「director」等）
+列の行き先と、人物を二重に入れないための規則は [schema.md](schema.md) に合わせる。
 
-- `track_persons`（中間：track_id, person_id, role_id）※曲単位での人物の役割（演奏・作詞作曲・制作等）
-- `release_persons`（中間：release_id, person_id, role_id）※リリース単位での人物の役割（アートワーク・映像等）
+- `releases`（`catalog_code` で59件。title, format, release_date, label_id, country, category, icon, path）
+  - `format` は Album / Single / EP。映画と MV は format ではない
+  - `catalog_code` は元の `order`。番号だけでリリースが分かれる
+- `tracks`（370行。title, artist, disc, side, number, remarks, source, release_id）
+  - `artist` は表示用の文字列。曲ごとに違うリリースがある
+- `labels`
+- `persons`（表記のまま。`Lennon-McCartney` は分割しない）
+- `roles`
+- `track_persons`（track_id, person_id, role_id, billing）曲の演奏・歌唱・作詞作曲・制作・映画監督・MV監督
+- `track_originals`（track_id, name）元の `original`。作詞作曲者とは別
+- `release_persons`（release_id, person_id, role_id）リリース全体で同じアートワーク
 
-- 備考や情報源は`tracks`または`releases`テーブルのカラムとして管理（必要なら分割可）
+`playing` は役割のない人名なので、`track_persons` には入れない。備考と情報源は曲の文字列のまま残す。
 
 ---
 
 ## 備考
 
-- `/` 区切り：一つのセルに複数データが入っている場合に使用。DB化時は中間テーブルや配列型、JSON型カラムなどで一対多の構造に分割することを推奨。
-- `: ` 区切り：「担当者: 役割」の形。DB化時は「人物」と「役割」を分離して格納することを推奨。
-- `,` 区切り：1人が複数の役割を持つ場合の担当パート。必要に応じて分割し、1レコード1役割とすることを推奨。
+- `/` 区切り：一つのセルに複数のデータが入っている印。人物、役割、原曲クレジットでは行に分ける。`artist` の `/`、`remarks` の `/`、URL の中の `/` は分けない。
+- `: ` 区切り：`musician` と `artwork` の「人物 : 役割」。人物と役割を別にする。
+- `,` 区切り：1人が複数の役割を持つときの担当。1行1役割にする。
+- `|` は、この JSON には出てこない。
 
 ---
 
