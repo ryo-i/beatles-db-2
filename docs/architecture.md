@@ -1,6 +1,6 @@
 # アーキテクチャ
 
-いま動いている画面と API は、人物の一覧と登録です。曲、リリース、人物と役割は [schema.md](schema.md) と [source_table.md](source_table.md) で設計していて、まだこのコードには入っていません。元の 370 曲は `data/data.json` にあります。
+いま動いている画面と API は、人物の一覧と登録です。曲、リリース、人物と役割は [schema.md](schema.md) と [source_table.md](source_table.md) で設計していて、まだこのコードには入っていません。元の 370 曲は `data/data.json` にあります。実装の順番は [plan.md](plan.md) です。
 
 ## バックエンド
 

@@ -16,6 +16,7 @@
 - 起動、Swagger、Prisma Studio、Storybook: [docs/local.md](docs/local.md)
 - いまのコードの置き方: [docs/architecture.md](docs/architecture.md)
 - スキーマ: [docs/schema.md](docs/schema.md)
+- 実装の順番: [docs/plan.md](docs/plan.md)
 - 元データの列: [docs/source_table.md](docs/source_table.md)
 - この構成に決めた理由: [docs/decision.md](docs/decision.md)
 - デプロイ: [docs/deploy.md](docs/deploy.md)
