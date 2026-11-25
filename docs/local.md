@@ -20,7 +20,12 @@ DB の公開ポートは `55432` です。このマシンに入っている Post
 | Swagger | http://localhost:3001/api |
 | DB | localhost:55432 |
 
-曲はまだ入りません。`prisma db seed` は行を足しません。人物一覧の見本から名前を登録すると、クレジット用の `persons` に1行増えます。
+曲データは次で入れ直します。`prisma db seed` は行を足しません。人物一覧の見本から名前を登録すると、クレジット用の `persons` に1行増えます。
+
+```bash
+cd apps/backend
+DATABASE_URL=postgres://user:password@127.0.0.1:55432/mydb npm run import:data
+```
 
 ## Swagger が開かないとき
 

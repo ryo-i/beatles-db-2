@@ -54,4 +54,4 @@ Swagger は `@nestjs/swagger` でコードから生成します。`POST /persons
 
 backend コンテナは、プロセスの起動前に `prisma migrate deploy` を実行します。適用済みの migration は再実行しません。新しい migration を作るときは `prisma migrate dev` を使います。
 
-`prisma/seed.ts` は何も入れません。曲は `data/data.json` の取り込みで入れます。起動時には実行しません。
+`prisma/seed.ts` は何も入れません。370曲は `npm run import:data` で `data/data.json` から入れます。起動時には実行しません。
